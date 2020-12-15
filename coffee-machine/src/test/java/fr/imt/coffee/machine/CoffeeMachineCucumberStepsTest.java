@@ -1,4 +1,4 @@
-package fr.imt.coffee.machine.component;
+package fr.imt.coffee.machine;
 
 import fr.imt.coffee.machine.CoffeeMachine;
 import fr.imt.coffee.machine.exception.LackOfWaterInTankException;

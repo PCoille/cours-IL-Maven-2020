@@ -14,7 +14,7 @@ import java.util.Random;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class CoffeeMachineFunctionalTest {
+public class CoffeeMachineTest {
     public CoffeeMachine coffeeMachineUnderTest;
 
     /**
@@ -30,7 +30,7 @@ public class CoffeeMachineFunctionalTest {
      * On vient tester si la machine ne se met pas en défaut
      */
     @Test
-    public void testMachineFailureFalse(){
+    public void testMachineFailureTrue(){
         //On créé un mock de l'objet random
         Random randomMock = Mockito.mock(Random.class);
         //On vient ensuite stubber la méthode nextGaussian pour pouvoir contrôler la valeur retournée
@@ -59,7 +59,7 @@ public class CoffeeMachineFunctionalTest {
      * On vient tester si la machine se met en défaut
      */
     @Test
-    public void testMachineFailureTrue(){
+    public void testMachineFailureFalse(){
         //On créé un mock de l'objet random
         Random randomMock = Mockito.mock(Random.class);
         //On vient ensuite stubber la méthode nextGaussian pour pouvoir controler la valeur retournée
@@ -81,6 +81,7 @@ public class CoffeeMachineFunctionalTest {
         coffeeMachineUnderTest.coffeeMachineFailure();
 
         Assertions.assertFalse(coffeeMachineUnderTest.isOutOfOrder());
+        //Ou avec Hamcrest
         assertThat(false, is(coffeeMachineUnderTest.isOutOfOrder()));
     }
 
@@ -115,7 +116,7 @@ public class CoffeeMachineFunctionalTest {
         //On teste à la fois le type d'exception levée mais aussi le message de l'exception
         Assertions.assertThrows(CupNotEmptyException.class, ()->{
                 coffeeMachineUnderTest.makeACoffee(mockCup, CoffeeType.MOKA);
-            }, "The container given is not empty.");
+            });
     }
 
     @AfterEach
