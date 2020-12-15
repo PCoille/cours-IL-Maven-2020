@@ -1,4 +1,4 @@
-package fr.imt.coffee.storage.cupboard.container;
+package fr.imt.cofee.storage.cupboard.container;
 
 public class Mug extends Container{
 

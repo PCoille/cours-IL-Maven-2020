@@ -11,6 +11,7 @@
 
     <modules>
         <module>coffee-machine</module>
+        <module>storage</module>
     </modules>
 
     <properties>

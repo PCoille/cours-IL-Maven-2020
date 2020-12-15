@@ -1,9 +1,9 @@
-package fr.imt.coffee.storage.cupboard;
+package fr.imt.cofee.storage.cupboard;
 
-import fr.imt.coffee.storage.cupboard.container.Container;
-import fr.imt.coffee.storage.cupboard.container.Cup;
-import fr.imt.coffee.storage.cupboard.container.Mug;
-import fr.imt.coffee.storage.cupboard.exception.ExceptionContainerCreation;
+import fr.imt.cofee.storage.cupboard.container.Container;
+import fr.imt.cofee.storage.cupboard.container.Cup;
+import fr.imt.cofee.storage.cupboard.container.Mug;
+import fr.imt.cofee.storage.cupboard.exception.ExceptionContainerCreation;
 
 public class FabricCupboardContainer {
 
@@ -32,6 +32,6 @@ public class FabricCupboardContainer {
         else if (typeContainer.equals("cup"))
             return new Cup(capacity);
         else
-            throw new ExceptionContainerCreation("Container not available in the storage cupboard : " + typeContainer);
+            throw new ExceptionContainerCreation("Container not available in the storage fr.imt.cofee.storage.cupboard : " + typeContainer);
     }
 }

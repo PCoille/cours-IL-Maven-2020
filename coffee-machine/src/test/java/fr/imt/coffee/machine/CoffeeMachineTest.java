@@ -1,8 +1,8 @@
 package fr.imt.coffee.machine;
 
-import fr.imt.coffee.storage.cupboard.coffee.type.CoffeeType;
-import fr.imt.coffee.storage.cupboard.container.Cup;
-import fr.imt.coffee.storage.cupboard.exception.CupNotEmptyException;
+import fr.imt.cofee.storage.cupboard.coffee.type.CoffeeType;
+import fr.imt.cofee.storage.cupboard.container.Cup;
+import fr.imt.cofee.storage.cupboard.exception.CupNotEmptyException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
