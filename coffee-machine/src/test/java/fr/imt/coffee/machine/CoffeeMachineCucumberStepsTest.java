@@ -2,11 +2,11 @@ package fr.imt.coffee.machine;
 
 import fr.imt.coffee.machine.exception.LackOfWaterInTankException;
 import fr.imt.coffee.machine.exception.MachineNotPluggedException;
-import fr.imt.cofee.storage.cupboard.coffee.type.CoffeeType;
-import fr.imt.cofee.storage.cupboard.container.CoffeeContainer;
-import fr.imt.cofee.storage.cupboard.container.CoffeeMug;
-import fr.imt.cofee.storage.cupboard.container.Mug;
-import fr.imt.cofee.storage.cupboard.exception.CupNotEmptyException;
+import fr.imt.coffee.storage.cupboard.coffee.type.CoffeeType;
+import fr.imt.coffee.storage.cupboard.container.CoffeeContainer;
+import fr.imt.coffee.storage.cupboard.container.CoffeeMug;
+import fr.imt.coffee.storage.cupboard.container.Mug;
+import fr.imt.coffee.storage.cupboard.exception.CupNotEmptyException;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
