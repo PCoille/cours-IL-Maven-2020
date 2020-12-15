@@ -73,7 +73,7 @@ public class CoffeeMachine {
      */
     public CoffeeContainer makeACoffee(Container container, CoffeeType coffeeType) throws LackOfWaterInTankException, InterruptedException, MachineNotPluggedException, CupNotEmptyException {
         if(!isPlugged){
-            throw new LackOfWaterInTankException("You must plug your coffee machine");
+            throw new MachineNotPluggedException("You must plug your coffee machine to an electrical plug.");
         }
 
         if (waterTank.getActualVolume() < container.getCapacity()){
@@ -95,10 +95,17 @@ public class CoffeeMachine {
         waterPump.pumpWater(container.getCapacity(), waterTank);
 
         CoffeeContainer coffeeContainer = null;
-        if(container instanceof Cup)
+        if(container instanceof Cup) {
             coffeeContainer = new CoffeeCup((Cup) container, coffeeType);
-        if(container instanceof Mug)
+            nbCoffeeMade++;
+        }
+        else if(container instanceof Mug) {
             coffeeContainer = new CoffeeMug((Mug) container, coffeeType);
+            nbCoffeeMade++;
+        }
+        else if(container instanceof CoffeeContainer)
+            throw new CupNotEmptyException("The container given is not empty.");
+
 
         coffeeContainer.setEmpty(true);
         return coffeeContainer;

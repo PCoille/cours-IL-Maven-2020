@@ -22,7 +22,7 @@ public class WaterTank {
      * @param waterVolumeToDecrease Volume d'eau à enlever
      */
     public void decreaseWaterVolume(double waterVolumeToDecrease){
-        this.actualVolume += waterVolumeToDecrease;
+        this.actualVolume -= waterVolumeToDecrease;
     }
 
     /**

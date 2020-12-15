@@ -1,8 +1,10 @@
 package fr.imt.coffee.machine;
 
 import fr.imt.cofee.storage.cupboard.coffee.type.CoffeeType;
-import fr.imt.cofee.storage.cupboard.container.Cup;
+import fr.imt.cofee.storage.cupboard.container.*;
 import fr.imt.cofee.storage.cupboard.exception.CupNotEmptyException;
+import fr.imt.coffee.machine.exception.LackOfWaterInTankException;
+import fr.imt.coffee.machine.exception.MachineNotPluggedException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,6 +119,146 @@ public class CoffeeMachineTest {
         Assertions.assertThrows(CupNotEmptyException.class, ()->{
                 coffeeMachineUnderTest.makeACoffee(mockCup, CoffeeType.MOKA);
             });
+    }
+
+    @Test
+    void reset() {
+        coffeeMachineUnderTest.setOutOfOrder(true);
+        Assertions.assertTrue(coffeeMachineUnderTest.isOutOfOrder());
+        coffeeMachineUnderTest.reset();
+        Assertions.assertFalse(coffeeMachineUnderTest.isOutOfOrder());
+    }
+
+    @Test
+    void addWaterInTank() {
+        Random randomMock = Mockito.mock(Random.class);
+        Mockito.when(randomMock.nextGaussian()).thenReturn(0.6);
+        coffeeMachineUnderTest.setRandomGenerator(randomMock);
+
+        double initWaterTankVolume = coffeeMachineUnderTest.getWaterTank().getActualVolume();
+        double volumeToAdd = 5;
+
+        coffeeMachineUnderTest.addWaterInTank(volumeToAdd);
+
+        Assertions.assertEquals(initWaterTankVolume + volumeToAdd,
+                coffeeMachineUnderTest.getWaterTank().getActualVolume());
+
+    }
+
+    @Test
+    void getErrorWhenMakingCoffeeWithoutBeingPluggedIn() throws InterruptedException, CupNotEmptyException, LackOfWaterInTankException, MachineNotPluggedException {
+        Random randomMock = Mockito.mock(Random.class);
+        Mockito.when(randomMock.nextGaussian()).thenReturn(0.6);
+        coffeeMachineUnderTest.setRandomGenerator(randomMock);
+
+        Assertions.assertFalse(coffeeMachineUnderTest.isPlugged());
+
+        Mug mug = new Mug(5);
+
+
+
+        Assertions.assertThrows(MachineNotPluggedException.class,
+                ()-> coffeeMachineUnderTest.makeACoffee(mug, CoffeeType.ARABICA),
+                "You must plug your coffee machine to an electrical plug.");
+    }
+
+    @Test
+    void getErrorWhenMakingCoffeeWithoutEnoughWater() throws InterruptedException, CupNotEmptyException, LackOfWaterInTankException, MachineNotPluggedException {
+        Random randomMock = Mockito.mock(Random.class);
+        Mockito.when(randomMock.nextGaussian()).thenReturn(0.6);
+        coffeeMachineUnderTest.setRandomGenerator(randomMock);
+
+        coffeeMachineUnderTest.addWaterInTank(10);
+        coffeeMachineUnderTest.plugToElectricalPlug();
+        Assertions.assertEquals(10, coffeeMachineUnderTest.getWaterTank().getActualVolume());
+
+        Mug mug = new Mug(20);
+
+
+
+        Assertions.assertThrows(LackOfWaterInTankException.class,
+                ()-> coffeeMachineUnderTest.makeACoffee(mug, CoffeeType.ARABICA),
+                "You must add more water in the water tank.");
+    }
+
+
+
+    @Test
+    void getErrorWhenMakingCoffeeInFullCup() throws InterruptedException, CupNotEmptyException, LackOfWaterInTankException, MachineNotPluggedException {
+        Random randomMock = Mockito.mock(Random.class);
+        Mockito.when(randomMock.nextGaussian()).thenReturn(0.6);
+        coffeeMachineUnderTest.setRandomGenerator(randomMock);
+
+        coffeeMachineUnderTest.addWaterInTank(10);
+        coffeeMachineUnderTest.plugToElectricalPlug();
+        Assertions.assertEquals(10, coffeeMachineUnderTest.getWaterTank().getActualVolume());
+
+        CoffeeMug mug = new CoffeeMug(0.05, CoffeeType.ARABICA);
+
+
+
+        Assertions.assertThrows(CupNotEmptyException.class,
+                ()-> coffeeMachineUnderTest.makeACoffee(mug, CoffeeType.ARABICA),
+                "The container given is not empty.");
+    }
+
+    @Test
+    void makeCoffeeMugCorrectly() throws InterruptedException, CupNotEmptyException, LackOfWaterInTankException, MachineNotPluggedException {
+        Random randomMock = Mockito.mock(Random.class);
+        Mockito.when(randomMock.nextGaussian()).thenReturn(0.6);
+        coffeeMachineUnderTest.setRandomGenerator(randomMock);
+
+        Assertions.assertEquals(0, coffeeMachineUnderTest.getNbCoffeeMade());
+
+        coffeeMachineUnderTest.addWaterInTank(10);
+        coffeeMachineUnderTest.plugToElectricalPlug();
+        Assertions.assertEquals(10, coffeeMachineUnderTest.getWaterTank().getActualVolume());
+
+
+
+        Mug mug = new Mug(0.05);
+        CoffeeContainer coffeeContainer = coffeeMachineUnderTest.makeACoffee(mug, CoffeeType.ARABICA);
+
+        Assertions.assertTrue(coffeeContainer instanceof CoffeeMug);
+        Assertions.assertEquals(0.05, coffeeContainer.getCapacity());
+        Assertions.assertEquals(CoffeeType.ARABICA, coffeeContainer.getCoffeeType());
+        Assertions.assertEquals(1, coffeeMachineUnderTest.getNbCoffeeMade());
+
+        Mug mug2 = new Mug(0.08);
+        CoffeeContainer coffeeContainer2 = coffeeMachineUnderTest.makeACoffee(mug2, CoffeeType.MOKA);
+
+        Assertions.assertTrue(coffeeContainer2 instanceof CoffeeMug);
+        Assertions.assertEquals(0.08, coffeeContainer2.getCapacity());
+        Assertions.assertEquals(CoffeeType.MOKA, coffeeContainer2.getCoffeeType());
+        Assertions.assertEquals(2, coffeeMachineUnderTest.getNbCoffeeMade());
+    }
+
+    @Test
+    void makeCoffeeCupCorrectly() throws InterruptedException, CupNotEmptyException, LackOfWaterInTankException, MachineNotPluggedException {
+        Random randomMock = Mockito.mock(Random.class);
+        Mockito.when(randomMock.nextGaussian()).thenReturn(0.6);
+        coffeeMachineUnderTest.setRandomGenerator(randomMock);
+        Assertions.assertEquals(0, coffeeMachineUnderTest.getNbCoffeeMade());
+
+        coffeeMachineUnderTest.addWaterInTank(10);
+        coffeeMachineUnderTest.plugToElectricalPlug();
+        Assertions.assertEquals(10, coffeeMachineUnderTest.getWaterTank().getActualVolume());
+
+        Cup cup = new Cup(0.05);
+        CoffeeContainer coffeeContainer = coffeeMachineUnderTest.makeACoffee(cup, CoffeeType.ARABICA);
+
+        Assertions.assertTrue(coffeeContainer instanceof CoffeeCup);
+        Assertions.assertEquals(0.05, coffeeContainer.getCapacity());
+        Assertions.assertEquals(CoffeeType.ARABICA, coffeeContainer.getCoffeeType());
+        Assertions.assertEquals(1, coffeeMachineUnderTest.getNbCoffeeMade());
+
+        Cup cup2 = new Cup(0.08);
+        CoffeeContainer coffeeContainer2 = coffeeMachineUnderTest.makeACoffee(cup2, CoffeeType.MOKA);
+
+        Assertions.assertTrue(coffeeContainer2 instanceof CoffeeCup);
+        Assertions.assertEquals(0.08, coffeeContainer2.getCapacity());
+        Assertions.assertEquals(CoffeeType.MOKA, coffeeContainer2.getCoffeeType());
+        Assertions.assertEquals(2, coffeeMachineUnderTest.getNbCoffeeMade());
     }
 
     @AfterEach
